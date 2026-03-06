@@ -1,0 +1,248 @@
+[
+    {
+        "fecha": "2025-12-03T10:15:22.000Z",
+        "idFactura": 1,
+        "monto": 320,
+        "numeroFactura": 1023
+    },
+    {
+        "fecha": "2025-12-05T14:45:10.000Z",
+        "idFactura": 2,
+        "monto": 7800,
+        "numeroFactura": 2045
+    },
+    {
+        "fecha": "2025-12-07T09:30:55.000Z",
+        "idFactura": 3,
+        "monto": 150,
+        "numeroFactura": 3567
+    },
+    {
+        "fecha": "2025-12-09T11:20:40.000Z",
+        "idFactura": 4,
+        "monto": 12500,
+        "numeroFactura": 4120
+    },
+    {
+        "fecha": "2025-12-11T16:05:33.000Z",
+        "idFactura": 5,
+        "monto": 480,
+        "numeroFactura": 5234
+    },
+    {
+        "fecha": "2025-12-13T13:50:12.000Z",
+        "idFactura": 6,
+        "monto": 5200,
+        "numeroFactura": 6345
+    },
+    {
+        "fecha": "2025-12-15T08:40:05.000Z",
+        "idFactura": 7,
+        "monto": 18000,
+        "numeroFactura": 7456
+    },
+    {
+        "fecha": "2025-12-17T17:25:44.000Z",
+        "idFactura": 8,
+        "monto": 95,
+        "numeroFactura": 8567
+    },
+    {
+        "fecha": "2025-12-19T12:10:30.000Z",
+        "idFactura": 9,
+        "monto": 6400,
+        "numeroFactura": 9678
+    },
+    {
+        "fecha": "2025-12-21T15:55:18.000Z",
+        "idFactura": 10,
+        "monto": 21000,
+        "numeroFactura": 1089
+    },
+    {
+        "fecha": "2026-01-02T09:45:22.000Z",
+        "idFactura": 11,
+        "monto": 75,
+        "numeroFactura": 2190
+    },
+    {
+        "fecha": "2026-01-04T13:15:10.000Z",
+        "idFactura": 12,
+        "monto": 520,
+        "numeroFactura": 3291
+    },
+    {
+        "fecha": "2026-01-06T10:30:55.000Z",
+        "idFactura": 13,
+        "monto": 8900,
+        "numeroFactura": 4392
+    },
+    {
+        "fecha": "2026-01-08T12:20:40.000Z",
+        "idFactura": 14,
+        "monto": 60,
+        "numeroFactura": 5493
+    },
+    {
+        "fecha": "2026-01-10T17:05:33.000Z",
+        "idFactura": 15,
+        "monto": 15000,
+        "numeroFactura": 6594
+    },
+    {
+        "fecha": "2026-01-12T14:50:12.000Z",
+        "idFactura": 16,
+        "monto": 430,
+        "numeroFactura": 7695
+    },
+    {
+        "fecha": "2026-01-14T09:40:05.000Z",
+        "idFactura": 17,
+        "monto": 7200,
+        "numeroFactura": 8796
+    },
+    {
+        "fecha": "2026-01-16T18:25:44.000Z",
+        "idFactura": 18,
+        "monto": 95,
+        "numeroFactura": 9897
+    },
+    {
+        "fecha": "2026-01-18T13:10:30.000Z",
+        "idFactura": 19,
+        "monto": 5100,
+        "numeroFactura": 1098
+    },
+    {
+        "fecha": "2026-01-20T16:55:18.000Z",
+        "idFactura": 20,
+        "monto": 19800,
+        "numeroFactura": 2199
+    },
+    {
+        "fecha": "2026-01-22T11:45:22.000Z",
+        "idFactura": 21,
+        "monto": 430,
+        "numeroFactura": 3300
+    },
+    {
+        "fecha": "2026-01-24T15:15:10.000Z",
+        "idFactura": 22,
+        "monto": 6200,
+        "numeroFactura": 4401
+    },
+    {
+        "fecha": "2026-01-26T12:30:55.000Z",
+        "idFactura": 23,
+        "monto": 80,
+        "numeroFactura": 5502
+    },
+    {
+        "fecha": "2026-01-28T14:20:40.000Z",
+        "idFactura": 24,
+        "monto": 510,
+        "numeroFactura": 6603
+    },
+    {
+        "fecha": "2026-01-30T19:05:33.000Z",
+        "idFactura": 25,
+        "monto": 7500,
+        "numeroFactura": 7704
+    },
+    {
+        "fecha": "2026-02-02T09:45:22.000Z",
+        "idFactura": 26,
+        "monto": 12000,
+        "numeroFactura": 8805
+    },
+    {
+        "fecha": "2026-02-04T13:15:10.000Z",
+        "idFactura": 27,
+        "monto": 95,
+        "numeroFactura": 9906
+    },
+    {
+        "fecha": "2026-02-06T10:30:55.000Z",
+        "idFactura": 28,
+        "monto": 430,
+        "numeroFactura": 1007
+    },
+    {
+        "fecha": "2026-02-08T12:20:40.000Z",
+        "idFactura": 29,
+        "monto": 6800,
+        "numeroFactura": 2108
+    },
+    {
+        "fecha": "2026-02-10T17:05:33.000Z",
+        "idFactura": 30,
+        "monto": 20000,
+        "numeroFactura": 3209
+    },
+    {
+        "fecha": "2026-02-12T14:50:12.000Z",
+        "idFactura": 31,
+        "monto": 75,
+        "numeroFactura": 4310
+    },
+    {
+        "fecha": "2026-02-14T09:40:05.000Z",
+        "idFactura": 32,
+        "monto": 540,
+        "numeroFactura": 5411
+    },
+    {
+        "fecha": "2026-02-16T18:25:44.000Z",
+        "idFactura": 33,
+        "monto": 8900,
+        "numeroFactura": 6512
+    },
+    {
+        "fecha": "2026-02-18T13:10:30.000Z",
+        "idFactura": 34,
+        "monto": 60,
+        "numeroFactura": 7613
+    },
+    {
+        "fecha": "2026-02-20T16:55:18.000Z",
+        "idFactura": 35,
+        "monto": 15000,
+        "numeroFactura": 8714
+    },
+    {
+        "fecha": "2026-02-22T11:45:22.000Z",
+        "idFactura": 36,
+        "monto": 480,
+        "numeroFactura": 9815
+    },
+    {
+        "fecha": "2026-02-23T15:15:10.000Z",
+        "idFactura": 37,
+        "monto": 7200,
+        "numeroFactura": 10916
+    },
+    {
+        "fecha": "2026-02-24T12:30:55.000Z",
+        "idFactura": 38,
+        "monto": 95,
+        "numeroFactura": 11917
+    },
+    {
+        "fecha": "2026-02-25T14:20:40.000Z",
+        "idFactura": 39,
+        "monto": 510,
+        "numeroFactura": 12918
+    },
+    {
+        "fecha": "2026-02-26T19:05:33.000Z",
+        "idFactura": 40,
+        "monto": 19800,
+        "numeroFactura": 13919
+    },
+    {
+        "fecha": "2026-02-27T09:45:22.000Z",
+        "idFactura": 41,
+        "monto": 75,
+        "numeroFactura": 14920
+    }
+]

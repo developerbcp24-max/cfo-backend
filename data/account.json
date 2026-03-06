@@ -1,0 +1,45 @@
+{
+  "accounts": [
+    {
+      "id": 111,
+      "number": "2011040905323",
+      "type": "CUENTA CORRIENTE",
+      "application": "CFO",
+      "applicationDescription": "Cuenta corriente",
+      "currency": "BOLIVIANOS",
+      "currencyDescription": "Bolivianos",
+      "formattedNumber": "11101",
+      "owner": "AFP FUTURO PARA FCI-RECAUDACIO",
+      "inProgressOperations": 0.0,
+      "withholding": 0.0,
+      "averageBalance": 9784.40,
+      "availableBalance": 9784.40,
+      "accountingBalance": 9784.40,
+      "position": 1,
+      "overdraftAmount": 0.0,
+      "overdraftBalance": 0.0,
+      "isAuthorizerControl": false,
+      "balanceErrorMessage": null,
+      "documentAccount": null,
+      "isSelected": false
+    }
+  ],
+  "totalBalances": [
+    {
+      "currency": "BOL",
+      "availableBalance": 5784.40,
+      "accountingBalance": 5784.40,
+      "inProgressOperations": 0.0,
+      "withholding": 0.0,
+      "position": 1
+    },
+    {
+      "currency": "BOL",
+      "availableBalance": 1000.40,
+      "accountingBalance": 1000.40,
+      "inProgressOperations": 0.0,
+      "withholding": 0.0,
+      "position": 1
+    }
+  ]
+}
