@@ -8,14 +8,8 @@ routerReport.post("/", (req, res) => {
     const { startDate, endDate } = req.body;
     const start = (0, date_utils_1.normalizeDate)(startDate);
     const end = (0, date_utils_1.normalizeDate)(endDate);
-    const parsed = reports.map((r) => ({
-        ...r,
-        fecha: (0, date_utils_1.normalizeDate)(r.fecha)
-    }));
-    const filtered = parsed.filter((r) => r.fecha >= start && r.fecha <= end).map((r) => ({
-        ...r,
-        fecha: (0, date_utils_1.formatDate)(r.fecha)
-    }));
+    const parsed = reports.map((r) => (Object.assign(Object.assign({}, r), { fecha: (0, date_utils_1.normalizeDate)(r.fecha) })));
+    const filtered = parsed.filter((r) => r.fecha >= start && r.fecha <= end).map((r) => (Object.assign(Object.assign({}, r), { fecha: (0, date_utils_1.formatDate)(r.fecha) })));
     console.log(`${filtered.length} registros encontrados.`);
     res.json(filtered);
 });
