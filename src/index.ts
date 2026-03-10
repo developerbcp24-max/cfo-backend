@@ -35,7 +35,6 @@ app.use("/account", router.accountRouter);
 app.use("/upload", router.uploadRouter);
 app.use("/file", router.fileRouter);
 
-
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
