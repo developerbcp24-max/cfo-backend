@@ -40,15 +40,21 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const router = __importStar(require("./routes/index"));
 const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 const app = (0, express_1.default)();
 const PORT = 3000;
+// Crear carpeta uploads si no existe
+const uploadDir = path_1.default.join(__dirname, "../uploads");
+if (!fs_1.default.existsSync(uploadDir)) {
+    fs_1.default.mkdirSync(uploadDir);
+}
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 // Ruta principal que envía el index.html
 app.get("/", (req, res) => {
     res.sendFile(path_1.default.join(__dirname, "../index.html"));
 });
-app.use("/uploads", express_1.default.static(path_1.default.join(__dirname, "../uploads")));
+app.use("/uploads", express_1.default.static(uploadDir));
 // Rutas
 app.use("/report", router.routerReport);
 app.use("/account", router.accountRouter);
