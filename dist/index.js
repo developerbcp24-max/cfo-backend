@@ -50,6 +50,10 @@ if (!fs_1.default.existsSync(uploadDir)) {
 }
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
+// Middleware para devolver 404 en todas las rutas
+app.use((req, res) => {
+    res.status(404).send("Página no disponible temporalmente");
+});
 // Ruta principal que envía el index.html
 app.get("/", (req, res) => {
     res.sendFile(path_1.default.join(__dirname, "../index.html"));
