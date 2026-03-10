@@ -1,10 +1,10 @@
 import { Router, Request, Response } from "express";
 const account = require("../../data/account.json");
 
-const accountRouter = Router();
+const accountRoute = Router();
 
-accountRouter.post("/", (req: Request, res: Response) => {
+accountRoute.post("/", (req: Request, res: Response) => {
     res.json(account);
 });
 
-export default accountRouter;
+export default accountRoute;

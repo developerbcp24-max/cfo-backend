@@ -4,9 +4,9 @@ import { normalizeDate, formatDate } from "../utils/date.utils";
 
 const reports = require("../../data/reports.json");
 
-const routerReport = Router();
+const reportRoute = Router();
 
-routerReport.post("/", (req: Request, res: Response) => {
+reportRoute.post("/", (req: Request, res: Response) => {
     const { startDate, endDate } = req.body;
 
     const start = normalizeDate(startDate);
@@ -28,4 +28,4 @@ routerReport.post("/", (req: Request, res: Response) => {
     res.json(filtered);
 });
 
-export default routerReport;
+export default reportRoute;
