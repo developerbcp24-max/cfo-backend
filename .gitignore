@@ -8,3 +8,5 @@ node_modules/
 # Ignorar compilados temporales
 build/
 
+uploads/*
+!uploads/.gitkeep
