@@ -42,9 +42,19 @@
 
       files.forEach((f) => {
         const li = document.createElement("li");
-        li.innerHTML = `<a href="${f.url}" download>${f.name}</a>`;
+        li.innerHTML = `
+          <a href="${f.url}" download>${f.name}</a>
+          <button onclick="deleteFile('${f.name}')">Borrar</button>
+        `;
         fileList.appendChild(li);
       });
+    }
+
+    async function deleteFile(filename) {
+      const response = await fetch(`/file/${filename}`, { method: "DELETE" });
+      const result = await response.json();
+      alert(result.message || result.error);
+      loadFiles(); // recargar lista
     }
 
     // Cargar al iniciar

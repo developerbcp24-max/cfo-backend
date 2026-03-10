@@ -3,10 +3,12 @@ import path from "path";
 import fs from "fs";
 
 const fileRoute = Router();
+const uploadDir = path.join(__dirname, "../../uploads");
+
 
 fileRoute.get("/", (req, res) => {
-    
-    const dirPath = path.join(__dirname, "../../uploads");
+
+    const dirPath = path.join(uploadDir);
 
     fs.readdir(dirPath, (err, files) => {
         if (err) {
@@ -20,6 +22,19 @@ fileRoute.get("/", (req, res) => {
         }));
 
         res.json(fileList);
+    });
+});
+
+
+// Ruta para borrar archivo
+fileRoute.delete("/:filename", (req, res) => {
+    const filePath = path.join(uploadDir, req.params.filename);
+
+    fs.unlink(filePath, (err) => {
+        if (err) {
+            return res.status(404).json({ error: "Archivo no encontrado" });
+        }
+        res.json({ message: "Archivo eliminado correctamente" });
     });
 });
 
