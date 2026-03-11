@@ -91,9 +91,9 @@ io.on("connection", (socket) => {
     }), 2000);
 });
 // Middleware para devolver 404 en todas las rutas
-// app.use((req, res) => {
-//   res.status(404).send("Página no disponible temporalmente");
-// });
+app.use((req, res) => {
+    res.status(404).send("Página no disponible temporalmente");
+});
 // Ruta principal que envía el index.html
 // app.get("/", (req, res) => {
 //     res.sendFile(path.join(__dirname, "../public/index.html"));    
