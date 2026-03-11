@@ -14,14 +14,14 @@ reportRoute.post("/", (req: Request, res: Response) => {
 
     const parsed = reports.map((r: any) => ({
         ...r,
-        fecha: normalizeDate(r.fecha)
+        date: normalizeDate(r.date)
     }));
 
     const filtered = parsed.filter((r: ReportClass) =>
-        r.fecha >= start && r.fecha <= end
+        r.date >= start && r.date <= end
     ).map((r: ReportClass) => ({
         ...r,
-        fecha: formatDate(r.fecha)
+        fecha: formatDate(r.date)
     }));
 
     console.log(`${filtered.length} registros encontrados.`);

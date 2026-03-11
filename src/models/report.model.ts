@@ -1,6 +1,6 @@
 export class ReportClass {
-    fecha!: Date;
-    idFactura!: number;
-    monto!: number;
-    numeroFactura!: number;
+    date!: Date;
+    invoiceId!: number;
+    amount!: number;
+    invoiceNumber!: number;
 }

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Subir archivos</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+
+<body>
+
+  <div class="container">
+    <h4>Subir archivos al servidor</h4>
+
+    <!-- Formulario para subir archivos -->
+    <form id="uploadForm">
+      <input type="file" id="fileInput" name="file" multiple>
+      <button type="submit">Subir</button>
+    </form>
+    <ul id="fileList"></ul>
+    <br>
+
+    <div class="row">
+      <div class="col">
+        <h4>Precios de Compra (BUY)</h4>
+        <table class="table table-responsive table-bordered" id="resultTableBuy">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Mínimo</th>
+              <th>Máximo</th>
+              <th>Tipo</th>
+              <th>BTC</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="col">
+        <h4>Precios de Venta (SELL)</h4>
+        <table class="table table-responsive table-bordered" id="resultTableSell">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Mínimo</th>
+              <th>Máximo</th>
+              <th>Tipo</th>
+              <th>BTC</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="alertBox" class="alert alert-danger alert-dismissible fade show position-fixed top-0 end-0 m-3"
+      style="z-index:1000; display:none;">
+      <span id="alertMessage"></span>
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+  </div>
+
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+
+  <script>
+    const form = document.getElementById("uploadForm");
+    const fileList = document.getElementById("fileList");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      const files = document.getElementById("fileInput").files;
+
+      for (let i = 0; i < files.length; i++) {
+        formData.append("file", files[i]);
+      }
+
+      const response = await fetch("/upload", { method: "POST", body: formData });
+      const result = await response.json();
+    });
+
+    async function loadFiles() {
+      const response = await fetch("/file");
+      const files = await response.json();
+
+      const fileList = document.getElementById("fileList");
+      fileList.innerHTML = "";
+
+      files.forEach((f) => {
+        const li = document.createElement("li");
+        li.innerHTML = `
+        <a href="${f.url}" download>${f.name}</a>
+        <button onclick="deleteFile('${f.name}')">Borrar</button>
+        `;
+        fileList.appendChild(li);
+      });
+    }
+
+    async function deleteFile(filename) {
+      const response = await fetch(`/file/${filename}`, { method: "DELETE" });
+      const result = await response.json();
+      alert(result.message || result.error);
+      loadFiles(); // recargar lista
+    }
+
+    // Cargar al iniciar
+    loadFiles();
+
+
+    let lastBuyPrice = null;
+    let lastSellPrice = null;
+
+    // Conectar al servidor
+    const socket = io("http://localhost:3000");
+
+    // Escuchar el evento binancePrices
+    socket.on("binancePrices", (data) => {
+      // console.log("Precios recibidos:", data);
+
+      // Actualizar tabla de BUY
+      // --- Tabla BUY ---
+      const tbodyBuy = document.querySelector("#resultTableBuy tbody");
+      tbodyBuy.innerHTML = "";
+      const minBuyPrice = Math.min(...data.buy.map(item => parseFloat(item.precio)));
+      data.buy.forEach((item, index) => {
+        const currentPrice = parseFloat(item.precio);
+        const highlightClass = currentPrice === minBuyPrice ? "table-success" : "";
+        const row = `<tr class="${highlightClass}">
+          <td>${item.nombre}</td>
+          <td>${item.precio}</td>
+          <td>${item.minimo}</td>
+          <td>${item.maximo}</td>
+          <td>${item.tipo}</td>
+          <td>${item.buyerBtcPositionLimit ||
+          item.buyerRegDaysLimit ||
+          item.buyerKycLimit ||
+          item.takerAdditionalKycRequired
+          }</td >
+        </tr>`;
+        tbodyBuy.innerHTML += row;
+      });
+
+      // if (index === 0) {
+      //   const currentPrice = parseFloat(item.precio);
+      //   if (lastBuyPrice !== null && currentPrice < lastBuyPrice) {
+      //     showAlert(`⚠️ El precio de COMPRA bajó: ${currentPrice} (antes ${lastBuyPrice})`);
+      //   }
+      //   lastBuyPrice = currentPrice;
+      // }
+
+
+      // Actualizar tabla de SELL
+      // --- Tabla SELL ---
+      const tbodySell = document.querySelector("#resultTableSell tbody");
+      tbodySell.innerHTML = "";
+      const maxBuyPrice = Math.max(...data.sell.map(item => parseFloat(item.precio)));
+      data.sell.forEach((item, index) => {
+        const currentPrice = parseFloat(item.precio);
+        const highlightClass = currentPrice === maxBuyPrice ? "table-danger" : "";
+        const row = `<tr class="${highlightClass}">
+          <td>${item.nombre}</td>
+          <td>${item.precio}</td>
+          <td>${item.minimo}</td>
+          <td>${item.maximo}</td>
+          <td>${item.tipo}</td>
+          <td>${item.buyerBtcPositionLimit ||
+          item.buyerRegDaysLimit ||
+          item.buyerKycLimit ||
+          item.takerAdditionalKycRequired
+          }</td >
+        </tr > `;
+        tbodySell.innerHTML += row;
+      });
+
+      // if (index === 0) {
+      //   const currentPrice = parseFloat(item.precio);
+      //   if (lastSellPrice !== null && currentPrice < lastSellPrice) {
+      //     showAlert(`⚠️ El precio de VENTA bajó: ${ currentPrice }(antes ${ lastSellPrice })`);
+      //   }
+      //   lastSellPrice = currentPrice;
+      // }
+    });
+
+    function showAlert(message, type = "danger") {
+      const alertBox = document.getElementById("alertBox");
+      const alertMessage = document.getElementById("alertMessage");
+
+      alertBox.className = `alert alert - ${type} alert - dismissible fade show position - fixed top - 0 end - 0 m - 3`;
+      alertMessage.innerText = message;
+      alertBox.style.display = "block";
+    }
+
+  </script>
+
+</body>
+
+</html>
