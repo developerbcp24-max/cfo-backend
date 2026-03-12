@@ -41,26 +41,21 @@ io.on("connection", (socket) => {
         try {
             const buyData = await service.getBinance("BUY", "BOB");
             const sellData = await service.getBinance("SELL", "BOB");
-
             // Emitir a todos los clientes conectados
             io.emit("binancePrices", { buy: buyData, sell: sellData });
         } catch (error) {
             console.error("Error consultando Binance:", error);
         }
-    }, 1000);
+    }, 2000);
 });
 
 
 // Middleware para devolver 404 en todas las rutas
-// app.use((req, res) => {
-//   res.status(404).send("Página no disponible temporalmente");
-// });
+app.use((req, res) => {
+  res.status(404).send("Página no disponible temporalmente");
+});
 
 // Ruta principal que envía el index.html
-// app.get("/", (req, res) => {
-//     res.sendFile(path.join(__dirname, "../public/index.html"));    
-// });
-
 app.use(express.static(path.join(__dirname, "../public")));
 
 app.use("/uploads", express.static(uploadDir));
