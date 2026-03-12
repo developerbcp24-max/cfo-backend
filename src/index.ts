@@ -47,14 +47,14 @@ io.on("connection", (socket) => {
         } catch (error) {
             console.error("Error consultando Binance:", error);
         }
-    }, 2000);
+    }, 1000);
 });
 
 
 // Middleware para devolver 404 en todas las rutas
-app.use((req, res) => {
-  res.status(404).send("Página no disponible temporalmente");
-});
+// app.use((req, res) => {
+//   res.status(404).send("Página no disponible temporalmente");
+// });
 
 // Ruta principal que envía el index.html
 // app.get("/", (req, res) => {
