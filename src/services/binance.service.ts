@@ -14,7 +14,7 @@ export class BinanceService {
 
     const body = {
       page: 1,
-      rows: 8,
+      rows: 10,
       payTypes: [],
       asset: "USDT",
       tradeType,

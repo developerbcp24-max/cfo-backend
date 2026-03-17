@@ -25,7 +25,7 @@ class BinanceService {
             const url = "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search";
             const body = {
                 page: 1,
-                rows: 8,
+                rows: 10,
                 payTypes: [],
                 asset: "USDT",
                 tradeType,

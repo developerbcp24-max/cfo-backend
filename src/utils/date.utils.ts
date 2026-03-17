@@ -1,6 +1,6 @@
 export function normalizeDate(dateStr: string | Date): Date {
-    const d = new Date(dateStr);
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const date = new Date(dateStr);
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 
 export function formatDate(dateObj: Date): string {

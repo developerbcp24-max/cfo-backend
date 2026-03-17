@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.normalizeDate = normalizeDate;
 exports.formatDate = formatDate;
 function normalizeDate(dateStr) {
-    const d = new Date(dateStr);
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const date = new Date(dateStr);
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
 }
 function formatDate(dateObj) {
     const year = dateObj.getFullYear();
