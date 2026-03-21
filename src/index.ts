@@ -8,7 +8,7 @@ import http from "http"
 import { BinanceService } from "./services/binance.service";
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const service = new BinanceService();
 
 
@@ -68,7 +68,7 @@ app.use("/file", router.fileRouter);
 app.use("/binance", router.binanceRouter);
 
 server.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en puerto ${PORT}`);
 });
 
 

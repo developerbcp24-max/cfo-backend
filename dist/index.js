@@ -54,7 +54,7 @@ const socket_io_1 = require("socket.io");
 const http_1 = __importDefault(require("http"));
 const binance_service_1 = require("./services/binance.service");
 const app = (0, express_1.default)();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const service = new binance_service_1.BinanceService();
 // Crear carpeta uploads si no existe
 const uploadDir = path_1.default.join(__dirname, "../uploads");
@@ -104,5 +104,5 @@ app.use("/upload", router.uploadRouter);
 app.use("/file", router.fileRouter);
 app.use("/binance", router.binanceRouter);
 server.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`Servidor corriendo en puerto ${PORT}`);
 });
