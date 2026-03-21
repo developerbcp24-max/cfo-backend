@@ -103,9 +103,6 @@ app.use("/account", router.accountRouter);
 app.use("/upload", router.uploadRouter);
 app.use("/file", router.fileRouter);
 app.use("/binance", router.binanceRouter);
-// app.listen(PORT, () => {
-//     console.log(`Servidor corriendo en http://localhost:${PORT}`);
-// });
 server.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
