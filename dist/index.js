@@ -53,6 +53,10 @@ const fs_1 = __importDefault(require("fs"));
 const socket_io_1 = require("socket.io");
 const http_1 = __importDefault(require("http"));
 const binance_service_1 = require("./services/binance.service");
+const dotenv_1 = __importDefault(require("dotenv"));
+// Detecta si estás en desarrollo o producción
+const envFile = process.env.NODE_ENV === "production" ? "env.prod" : "env.dev";
+dotenv_1.default.config({ path: envFile });
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 3000;
 const service = new binance_service_1.BinanceService();

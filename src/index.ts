@@ -6,6 +6,11 @@ import fs from "fs";
 import { Server } from "socket.io";
 import http from "http"
 import { BinanceService } from "./services/binance.service";
+import dotenv from 'dotenv';
+
+// Detecta si estás en desarrollo o producción
+const envFile = process.env.NODE_ENV === "production" ? "env.prod" : "env.dev";
+dotenv.config({ path: envFile });
 
 const app = express();
 const PORT = process.env.PORT || 3000;
