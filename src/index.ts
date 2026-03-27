@@ -6,9 +6,14 @@ import fs from "fs";
 import { Server } from "socket.io";
 import http from "http"
 import { BinanceService } from "./services/binance.service";
+import dotenv from 'dotenv';
+
+// Detecta si estás en desarrollo o producción
+const envFile = process.env.NODE_ENV === "production" ? "env.prod" : "env.dev";
+dotenv.config({ path: envFile });
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const service = new BinanceService();
 
 
@@ -51,9 +56,9 @@ io.on("connection", (socket) => {
 
 
 // Middleware para devolver 404 en todas las rutas
-app.use((req, res) => {
-  res.status(404).send("Página no disponible temporalmente");
-});
+// app.use((req, res) => {
+//   res.status(404).send("Página no disponible temporalmente");
+// });
 
 // Ruta principal que envía el index.html
 app.use(express.static(path.join(__dirname, "../public")));
@@ -67,13 +72,8 @@ app.use("/upload", router.uploadRouter);
 app.use("/file", router.fileRouter);
 app.use("/binance", router.binanceRouter);
 
-// app.listen(PORT, () => {
-//     console.log(`Servidor corriendo en http://localhost:${PORT}`);
-// });
-
-
 server.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor corriendo en puerto ${PORT}`);
 });
 
 

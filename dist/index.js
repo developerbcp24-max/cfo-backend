@@ -53,8 +53,12 @@ const fs_1 = __importDefault(require("fs"));
 const socket_io_1 = require("socket.io");
 const http_1 = __importDefault(require("http"));
 const binance_service_1 = require("./services/binance.service");
+const dotenv_1 = __importDefault(require("dotenv"));
+// Detecta si estás en desarrollo o producción
+const envFile = process.env.NODE_ENV === "production" ? "env.prod" : "env.dev";
+dotenv_1.default.config({ path: envFile });
 const app = (0, express_1.default)();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const service = new binance_service_1.BinanceService();
 // Crear carpeta uploads si no existe
 const uploadDir = path_1.default.join(__dirname, "../uploads");
@@ -91,9 +95,9 @@ io.on("connection", (socket) => {
     }), 3000);
 });
 // Middleware para devolver 404 en todas las rutas
-app.use((req, res) => {
-    res.status(404).send("Página no disponible temporalmente");
-});
+// app.use((req, res) => {
+//   res.status(404).send("Página no disponible temporalmente");
+// });
 // Ruta principal que envía el index.html
 app.use(express_1.default.static(path_1.default.join(__dirname, "../public")));
 app.use("/uploads", express_1.default.static(uploadDir));
@@ -103,9 +107,6 @@ app.use("/account", router.accountRouter);
 app.use("/upload", router.uploadRouter);
 app.use("/file", router.fileRouter);
 app.use("/binance", router.binanceRouter);
-// app.listen(PORT, () => {
-//     console.log(`Servidor corriendo en http://localhost:${PORT}`);
-// });
 server.listen(PORT, () => {
-    console.log(`Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`Servidor corriendo en puerto ${PORT}`);
 });
