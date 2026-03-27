@@ -121,6 +121,37 @@
         </table>
       </div>
     </div>
+
+    <div class="row mt-4">
+      <div class="col">
+        <h5>Contadores de Compra</h5>
+        <table class="table table-dark table-striped table-bordered" id="counterTableBuy">
+          <thead>
+            <tr>
+              <th>Contador</th>
+              <th>Precio</th>
+              <th>Cantidad</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="col">
+        <h5>Contadores de Venta</h5>
+        <table class="table table-dark table-striped table-bordered" id="counterTableSell">
+          <thead>
+            <tr>
+              <th>Contador</th>
+              <th>Precio</th>
+              <th>Cantidad</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+
   </div>
 
 
@@ -187,6 +218,7 @@
       const tbodyBuy = document.querySelector("#resultTableBuy tbody");
       tbodyBuy.innerHTML = "";
       const minBuyPrice = Math.min(...data.buy.map(item => parseFloat(item.precio)));
+      
       data.buy.forEach((item, index) => {
         const currentPrice = parseFloat(item.precio);
         const highlightClass = currentPrice === minBuyPrice ? "table-success" : "";
@@ -227,6 +259,53 @@
         </tr > `;
         tbodySell.innerHTML += row;
       });
+
+
+      // --- Contadores de Compra ---
+      const tbodyCounterBuy = document.querySelector("#counterTableBuy tbody");
+      tbodyCounterBuy.innerHTML = "";
+
+      const conteoBuy = {};
+      data.buy.forEach(item => {
+        const precio = parseFloat(item.precio).toFixed(2);
+        conteoBuy[precio] = (conteoBuy[precio] || 0) + 1;
+      });
+
+      // Ordenar precios descendente y tomar los 3 primeros
+      const preciosBuyOrdenados = Object.keys(conteoBuy).sort((a, b) => parseFloat(b) - parseFloat(a));
+      const topBuy = preciosBuyOrdenados.slice(0, 3);
+
+      topBuy.forEach((precio, index) => {
+        const row = `<tr>
+          <td>Contador${index + 1}</td>
+          <td>${precio}</td>
+          <td>${conteoBuy[precio]}</td>
+        </tr>`;
+        tbodyCounterBuy.innerHTML += row;
+      });
+
+      // --- Contadores de Venta ---
+      const tbodyCounterSell = document.querySelector("#counterTableSell tbody");
+      tbodyCounterSell.innerHTML = "";
+
+      const conteoSell = {};
+      data.sell.forEach(item => {
+        const precio = parseFloat(item.precio).toFixed(2);
+        conteoSell[precio] = (conteoSell[precio] || 0) + 1;
+      });
+
+      // Ordenar precios descendente y tomar los 3 primeros
+      const preciosSellOrdenados = Object.keys(conteoSell).sort((a, b) => parseFloat(b) - parseFloat(a));
+      const topSell = preciosSellOrdenados.slice(0, 3);
+
+      topSell.forEach((precio, index) => {
+        const row = `<tr>
+          <td>Contador${index + 1}</td>
+          <td>${precio}</td>
+          <td>${conteoSell[precio]}</td>
+        </tr>`;
+        tbodyCounterSell.innerHTML += row;
+      });
     });
 
     function showAlert(message, type = "danger") {
@@ -237,6 +316,35 @@
       alertMessage.innerText = message;
       alertBox.style.display = "block";
     }
+
+    // --- Tabla de Contadores ---
+    const tbodyCounter = document.querySelector("#counterTable tbody");
+    tbodyCounter.innerHTML = "";
+
+    // Tomar solo los 3 primeros precios de compra y venta
+    const topBuy = data.buy.slice(0, 3);
+    const topSell = data.sell.slice(0, 3);
+
+    // Generar filas para compra
+    topBuy.forEach((item, index) => {
+      const row = `<tr>
+        <td>Contador${index + 1}</td>
+        <td>Compra</td>
+        <td>${item.precio}</td>
+      </tr>`;
+      tbodyCounter.innerHTML += row;
+    });
+
+    // Generar filas para venta
+    topSell.forEach((item, index) => {
+      const row = `<tr>
+        <td>Contador${index + 1}</td>
+        <td>Venta</td>
+        <td>${item.precio}</td>
+      </tr>`;
+      tbodyCounter.innerHTML += row;
+    });
+
 
   </script>
 

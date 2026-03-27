@@ -1,27 +1,53 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
   <meta charset="UTF-8">
   <title>Simulador Compra/Venta USDT</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
-    input, button { padding: 8px; margin: 5px; }
-    table { border-collapse: collapse; margin-top: 15px; width: 100%; background: #fff; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-    th { background: #eee; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background: #f4f4f4;
+    }
+
+    input,
+    button {
+      padding: 8px;
+      margin: 5px;
+    }
+
+    table {
+      border-collapse: collapse;
+      margin-top: 15px;
+      width: 100%;
+      background: #fff;
+    }
+
+    th,
+    td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+
+    th {
+      background: #eee;
+    }
   </style>
 </head>
+
 <body>
   <h2>Simulador de Compra/Venta de USDT</h2>
 
   <label>Monto en Bs:</label>
-  <input type="number" id="montoBs" value="30000"><br>
+  <input type="number" id="montoBs" value="33350"><br>
 
   <label>Tipo de cambio de compra (Bs/USDT):</label>
-  <input type="number" step="0.01" id="tcCompra" value="9.27"><br>
+  <input type="number" step="0.01" id="tcCompra" value="9.25"><br>
 
   <label>Precio de venta principal (Bs/USDT):</label>
-  <input type="number" step="0.01" id="tcVentaBase" value="9.30"><br>
+  <input type="number" step="0.01" id="tcVentaBase" value="9.40"><br>
 
   <button onclick="calcular()">Calcular</button>
 
@@ -39,7 +65,12 @@
       let usdtNetos = usdt * (1 - comision);
 
       // Generar precios de venta: base, +0.01, +0.02
-      const preciosVenta = [tcVentaBase, tcVentaBase + 0.01, tcVentaBase + 0.02];
+      // const preciosVenta = [tcVentaBase, tcVentaBase + 0.01, tcVentaBase + 0.02];
+      // Generar precios de venta desde base hasta +0.10 en pasos de 0.01
+      let preciosVenta = [];
+      for (let i = 0; i <= 15; i++) {
+        preciosVenta.push(tcVentaBase + i * 0.01);
+      }
 
       let html = `
         <h3>Resultado de la compra</h3>
@@ -76,4 +107,5 @@
     }
   </script>
 </body>
+
 </html>
