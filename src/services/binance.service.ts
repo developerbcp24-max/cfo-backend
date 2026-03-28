@@ -8,7 +8,6 @@ const agent = new https.Agent({
 
 export class BinanceService {
 
-
   async getBinance(tradeType: "BUY" | "SELL", fiat: string = "BOB") {
     const url = "https://p2p.binance.com/bapi/c2c/v2/friendly/c2c/adv/search";
 
@@ -28,7 +27,6 @@ export class BinanceService {
 
     return response.data.data
       .map((item: any) => new BinanceClass(item));
-    // .filter((item: any) => !item.adv.isRestricted)
   }
 
 
