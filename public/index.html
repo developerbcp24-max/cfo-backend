@@ -176,7 +176,8 @@
     let lastSellPrice = null;
 
     // Conectar al servidor
-    const socket = io("http://localhost:3000");
+    const SERVER_URL = "http://localhost:3000";
+    const socket = io(SERVER_URL);
 
     // Escuchar el evento binancePrices
     socket.on("binancePrices", (data) => {
