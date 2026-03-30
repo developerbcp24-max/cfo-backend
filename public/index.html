@@ -1,353 +1,42 @@
+<!-- index.html (Menú principal) -->
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
   <meta charset="UTF-8">
-  <title>Subir archivos</title>
-  <link rel="stylesheet" href="/css/bootstrap.min.css">
-
-  <style>
-    body {
-      background-color: #121212;
-      color: #e0e0e0;
-    }
-
-    h4 {
-      color: #ffffff;
-    }
-
-    /* Tablas en modo oscuro */
-    .table {
-      color: #e0e0e0;
-      background-color: #1e1e1e;
-    }
-
-    .table thead {
-      background-color: #2c2c2c;
-      color: #ffffff;
-    }
-
-    .table-bordered td,
-    .table-bordered th {
-      border: 1px solid #444;
-    }
-
-    /* Resaltar filas */
-    .table-success {
-      background-color: #2e7d32 !important;
-      /* verde oscuro */
-      color: #fff;
-    }
-
-    .table-danger {
-      background-color: #c62828 !important;
-      /* rojo oscuro */
-      color: #fff;
-    }
-
-    input[type="file"],
-    button {
-      background-color: #2c2c2c;
-      color: #e0e0e0;
-      border: 1px solid #444;
-      padding: 5px 10px;
-      border-radius: 4px;
-    }
-
-    button:hover {
-      background-color: #3a3a3a;
-    }
-
-    a {
-      color: #90caf9;
-    }
-
-    a:hover {
-      color: #64b5f6;
-    }
-
-    .alert {
-      background-color: #b71c1c;
-      color: #fff;
-    }
-  </style>
-
-
+  <title>Menú Principal</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<body class="bg-light">
 
-<body>
-  <div class="container">
-    <div style="display: none;">
-      <h4>Subir archivos al servidor</h4>
-      <form id="uploadForm">
-        <input type="file" id="fileInput" name="file" multiple>
-        <button type="submit">Subir</button>
-      </form>
-      <ul id="fileList"></ul>
-    </div>
-    <br>
-    <br>
-    <div class="row">
-      <div class="col">
-        <!-- <h4>Precios de Compra (BUY)</h4> -->
-        <table class="table table-dark table-striped table-bordered" id="resultTableBuy">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Precio</th>
-              <th>Mínimo</th>
-              <th>Máximo</th>
-              <th>Tipo</th>
-              <th>BTC</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+  <div class="container py-5">
+    <h1 class="text-center mb-4">Menú Principal</h1>
+    <div class="row g-4 justify-content-center">
+
+      <!-- Card Upload -->
+      <div class="col-md-4">
+        <div class="card text-center shadow">
+          <div class="card-body">
+            <i class="bi bi-upload fs-1"></i>
+            <h5 class="card-title mt-3">Subir Archivos</h5>
+            <a href="upload.html" class="btn btn-primary mt-2">Ir</a>
+          </div>
+        </div>
       </div>
-      <div class="col">
-        <!-- <h4>Precios de Venta (SELL)</h4> -->
-        <table class="table table-dark table-striped table-bordered" id="resultTableSell">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Precio</th>
-              <th>Mínimo</th>
-              <th>Máximo</th>
-              <th>Tipo</th>
-              <th>BTC</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
+
+      <!-- Card Cripto -->
+      <div class="col-md-4">
+        <div class="card text-center shadow">
+          <div class="card-body">
+            <i class="bi bi-currency-bitcoin fs-1"></i>
+            <h5 class="card-title mt-3">Cripto</h5>
+            <a href="cripto.html" class="btn btn-primary mt-2">Ir</a>
+          </div>
+        </div>
       </div>
     </div>
-
-    <div class="row mt-4">
-      <div class="col">
-        <h5>Contadores de Compra</h5>
-        <table class="table table-dark table-striped table-bordered" id="counterTableBuy">
-          <thead>
-            <tr>
-              <th>Contador</th>
-              <th>Precio</th>
-              <th>Cantidad</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <div class="col">
-        <h5>Contadores de Venta</h5>
-        <table class="table table-dark table-striped table-bordered" id="counterTableSell">
-          <thead>
-            <tr>
-              <th>Contador</th>
-              <th>Precio</th>
-              <th>Cantidad</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-    </div>
-
-
   </div>
 
-
-  <script src="/js/bootstrap.bundle.min.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-
-  <script>
-    const form = document.getElementById("uploadForm");
-    const fileList = document.getElementById("fileList");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const formData = new FormData();
-      const files = document.getElementById("fileInput").files;
-
-      for (let i = 0; i < files.length; i++) {
-        formData.append("file", files[i]);
-      }
-
-      const response = await fetch("/upload", { method: "POST", body: formData });
-      const result = await response.json();
-    });
-
-    async function loadFiles() {
-      const response = await fetch("/file");
-      const files = await response.json();
-
-      const fileList = document.getElementById("fileList");
-      fileList.innerHTML = "";
-
-      files.forEach((f) => {
-        const li = document.createElement("li");
-        li.innerHTML = `
-        <a href="${f.url}" download>${f.name}</a>
-        <button onclick="deleteFile('${f.name}')">Borrar</button>
-        `;
-        fileList.appendChild(li);
-      });
-    }
-
-    async function deleteFile(filename) {
-      const response = await fetch(`/file/${filename}`, { method: "DELETE" });
-      const result = await response.json();
-      alert(result.message || result.error);
-      loadFiles(); // recargar lista
-    }
-
-    // Cargar al iniciar
-    loadFiles();
-
-
-    let lastBuyPrice = null;
-    let lastSellPrice = null;
-
-    // Conectar al servidor
-    const SERVER_URL = "http://localhost:3000";
-    const socket = io(SERVER_URL);
-
-    // Escuchar el evento binancePrices
-    socket.on("binancePrices", (data) => {
-
-      // Actualizar tabla de BUY
-      // --- Tabla BUY ---
-      const tbodyBuy = document.querySelector("#resultTableBuy tbody");
-      tbodyBuy.innerHTML = "";
-      const minBuyPrice = Math.min(...data.buy.map(item => parseFloat(item.precio)));
-      
-      data.buy.forEach((item, index) => {
-        const currentPrice = parseFloat(item.precio);
-        const highlightClass = currentPrice === minBuyPrice ? "table-success" : "";
-        const row = `<tr class="${highlightClass}">
-          <td>${item.nombre}</td>
-          <td>${item.precio}</td>
-          <td>${item.minimo}</td>
-          <td>${item.maximo}</td>
-          <td>${item.tipo}</td>
-          <td>${item.buyerBtcPositionLimit ||
-          item.buyerRegDaysLimit ||
-          item.buyerKycLimit ||
-          item.takerAdditionalKycRequired
-          }</td >
-        </tr>`;
-        tbodyBuy.innerHTML += row;
-      });
-
-      // Actualizar tabla de SELL
-      // --- Tabla SELL ---
-      const tbodySell = document.querySelector("#resultTableSell tbody");
-      tbodySell.innerHTML = "";
-      const maxBuyPrice = Math.max(...data.sell.map(item => parseFloat(item.precio)));
-      data.sell.forEach((item, index) => {
-        const currentPrice = parseFloat(item.precio);
-        const highlightClass = currentPrice === maxBuyPrice ? "table-danger" : "";
-        const row = `<tr class="${highlightClass}">
-          <td>${item.nombre}</td>
-          <td>${item.precio}</td>
-          <td>${item.minimo}</td>
-          <td>${item.maximo}</td>
-          <td>${item.tipo}</td>
-          <td>${item.buyerBtcPositionLimit ||
-          item.buyerRegDaysLimit ||
-          item.buyerKycLimit ||
-          item.takerAdditionalKycRequired
-          }</td >
-        </tr > `;
-        tbodySell.innerHTML += row;
-      });
-
-
-      // --- Contadores de Compra ---
-      const tbodyCounterBuy = document.querySelector("#counterTableBuy tbody");
-      tbodyCounterBuy.innerHTML = "";
-
-      const conteoBuy = {};
-      data.buy.forEach(item => {
-        const precio = parseFloat(item.precio).toFixed(2);
-        conteoBuy[precio] = (conteoBuy[precio] || 0) + 1;
-      });
-
-      // Ordenar precios descendente y tomar los 3 primeros
-      const preciosBuyOrdenados = Object.keys(conteoBuy).sort((a, b) => parseFloat(b) - parseFloat(a));
-      const topBuy = preciosBuyOrdenados.slice(0, 3);
-
-      topBuy.forEach((precio, index) => {
-        const row = `<tr>
-          <td>Contador${index + 1}</td>
-          <td>${precio}</td>
-          <td>${conteoBuy[precio]}</td>
-        </tr>`;
-        tbodyCounterBuy.innerHTML += row;
-      });
-
-      // --- Contadores de Venta ---
-      const tbodyCounterSell = document.querySelector("#counterTableSell tbody");
-      tbodyCounterSell.innerHTML = "";
-
-      const conteoSell = {};
-      data.sell.forEach(item => {
-        const precio = parseFloat(item.precio).toFixed(2);
-        conteoSell[precio] = (conteoSell[precio] || 0) + 1;
-      });
-
-      // Ordenar precios descendente y tomar los 3 primeros
-      const preciosSellOrdenados = Object.keys(conteoSell).sort((a, b) => parseFloat(b) - parseFloat(a));
-      const topSell = preciosSellOrdenados.slice(0, 3);
-
-      topSell.forEach((precio, index) => {
-        const row = `<tr>
-          <td>Contador${index + 1}</td>
-          <td>${precio}</td>
-          <td>${conteoSell[precio]}</td>
-        </tr>`;
-        tbodyCounterSell.innerHTML += row;
-      });
-    });
-
-    function showAlert(message, type = "danger") {
-      const alertBox = document.getElementById("alertBox");
-      const alertMessage = document.getElementById("alertMessage");
-
-      alertBox.className = `alert alert - ${type} alert - dismissible fade show position - fixed top - 0 end - 0 m - 3`;
-      alertMessage.innerText = message;
-      alertBox.style.display = "block";
-    }
-
-    // --- Tabla de Contadores ---
-    const tbodyCounter = document.querySelector("#counterTable tbody");
-    tbodyCounter.innerHTML = "";
-
-    // Tomar solo los 3 primeros precios de compra y venta
-    const topBuy = data.buy.slice(0, 3);
-    const topSell = data.sell.slice(0, 3);
-
-    // Generar filas para compra
-    topBuy.forEach((item, index) => {
-      const row = `<tr>
-        <td>Contador${index + 1}</td>
-        <td>Compra</td>
-        <td>${item.precio}</td>
-      </tr>`;
-      tbodyCounter.innerHTML += row;
-    });
-
-    // Generar filas para venta
-    topSell.forEach((item, index) => {
-      const row = `<tr>
-        <td>Contador${index + 1}</td>
-        <td>Venta</td>
-        <td>${item.precio}</td>
-      </tr>`;
-      tbodyCounter.innerHTML += row;
-    });
-
-
-  </script>
-
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </body>
-
 </html>

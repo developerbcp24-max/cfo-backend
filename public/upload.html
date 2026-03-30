@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+
+<body class="bg-light">
+    <div>
+        <h4>Subir archivos al servidor</h4>
+        <form id="uploadForm">
+            <input type="file" id="fileInput" name="file" multiple>
+            <button type="submit">Subir</button>
+        </form>
+        <ul id="fileList"></ul>
+    </div>
+
+    <script>
+        const form = document.getElementById("uploadForm");
+        const fileList = document.getElementById("fileList");
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const formData = new FormData();
+            const files = document.getElementById("fileInput").files;
+
+            for (let i = 0; i < files.length; i++) {
+                formData.append("file", files[i]);
+            }
+
+            const response = await fetch("/upload", { method: "POST", body: formData });
+            const result = await response.json();
+        });
+
+        async function loadFiles() {
+            const response = await fetch("/file");
+            const files = await response.json();
+
+            const fileList = document.getElementById("fileList");
+            fileList.innerHTML = "";
+
+            files.forEach((f) => {
+                const li = document.createElement("li");
+                li.innerHTML = `
+        <a href="${f.url}" download>${f.name}</a>
+        <button onclick="deleteFile('${f.name}')">Borrar</button>
+        `;
+                fileList.appendChild(li);
+            });
+        }
+
+        async function deleteFile(filename) {
+            const response = await fetch(`/file/${filename}`, { method: "DELETE" });
+            const result = await response.json();
+            alert(result.message || result.error);
+            loadFiles(); // recargar lista
+        }
+
+        // Cargar al iniciar
+        loadFiles();
+
+    </script>
+</body>
+
+</html>

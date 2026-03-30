@@ -3,109 +3,341 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Simulador Compra/Venta USDT</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      background: #f4f4f4;
-    }
-
-    input,
-    button {
-      padding: 8px;
-      margin: 5px;
-    }
-
-    table {
-      border-collapse: collapse;
-      margin-top: 15px;
-      width: 100%;
-      background: #fff;
-    }
-
-    th,
-    td {
-      border: 1px solid #ccc;
-      padding: 8px;
-      text-align: center;
-    }
-
-    th {
-      background: #eee;
-    }
-  </style>
+  <title>Subir archivos</title>
+  <link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
 
 <body>
-  <h2>Simulador de Compra/Venta de USDT</h2>
+  <div class="container">
+    <div class="row">
+      <div class="col">
+        <!-- <h4>Precios de Compra (BUY)</h4> -->
+        <table class="table table-dark table-striped table-bordered" id="resultTableBuy">
+          <thead>
+            <tr>
+              <!-- <th>Nombre</th> -->
+              <th>Precio</th>
+              <th>Mínimo</th>
+              <th>Máximo</th>
+              <!-- <th>Tipo</th> -->
+              <!-- <th>BTC</th> -->
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="col">
+        <!-- <h4>Precios de Venta (SELL)</h4> -->
+        <table class="table table-dark table-striped table-bordered" id="resultTableSell">
+          <thead>
+            <tr>
+              <!-- <th>Nombre</th> -->
+              <th>Precio</th>
+              <th>Mínimo</th>
+              <th>Máximo</th>
+              <!-- <th>Tipo</th> -->
+              <!-- <th>BTC</th> -->
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
 
-  <label>Monto en Bs:</label>
-  <input type="number" id="montoBs" value="33350"><br>
+    <div class="row mt-4">
+      <div class="col">
+        <h5>Contadores de Compra</h5>
+        <table class="table table-dark table-striped table-bordered" id="counterTableBuy">
+          <thead>
+            <tr>
+              <th>Contador</th>
+              <th>Precio</th>
+              <th>Cantidad</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <div class="col">
+        <h5>Contadores de Venta</h5>
+        <table class="table table-dark table-striped table-bordered" id="counterTableSell">
+          <thead>
+            <tr>
+              <th>Contador</th>
+              <th>Precio</th>
+              <th>Cantidad</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
 
-  <label>Tipo de cambio de compra (Bs/USDT):</label>
-  <input type="number" step="0.01" id="tcCompra" value="9.25"><br>
+    <div class="row mt-4">
+      <div class="col">
+        <h5>Gráfico de Compra (BUY)</h5>
+        <canvas id="chartBuy" width="500" height="200"></canvas>
+      </div>
+      <div class="col">
+        <h5>Gráfico de Venta (SELL)</h5>
+        <canvas id="chartSell" width="500" height="200"></canvas>
+      </div>
+    </div>
+  </div>
 
-  <label>Precio de venta principal (Bs/USDT):</label>
-  <input type="number" step="0.01" id="tcVentaBase" value="9.40"><br>
 
-  <button onclick="calcular()">Calcular</button>
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 
-  <div id="resultado"></div>
 
   <script>
-    function calcular() {
-      const montoBs = parseFloat(document.getElementById("montoBs").value);
-      const tcCompra = parseFloat(document.getElementById("tcCompra").value);
-      const tcVentaBase = parseFloat(document.getElementById("tcVentaBase").value);
-      const comision = 0.001; // 0.1%
 
-      // Compra
-      let usdt = montoBs / tcCompra;
-      let usdtNetos = usdt * (1 - comision);
 
-      // Generar precios de venta: base, +0.01, +0.02
-      // const preciosVenta = [tcVentaBase, tcVentaBase + 0.01, tcVentaBase + 0.02];
-      // Generar precios de venta desde base hasta +0.10 en pasos de 0.01
-      let preciosVenta = [];
-      for (let i = 0; i <= 15; i++) {
-        preciosVenta.push(tcVentaBase + i * 0.01);
-      }
 
-      let html = `
-        <h3>Resultado de la compra</h3>
-        <p>USDT comprados: ${usdt.toFixed(4)}<br>
-        USDT netos (después de comisión): ${usdtNetos.toFixed(4)}</p>
+    let lastBuyPrice = null;
+    let lastSellPrice = null;
+    let chartBuy, chartSell;
 
-        <h3>Simulación de venta</h3>
-        <table>
-          <tr>
-            <th>Precio Venta (Bs/USDT)</th>
-            <th>Bs recibidos (sin comisión)</th>
-            <th>Bs netos (con comisión)</th>
-            <th>Ganancia neta (Bs)</th>
-          </tr>
-      `;
+    // Conectar al servidor
+    const SERVER_URL = "http://localhost:3000";
+    const socket = io(SERVER_URL);
 
-      preciosVenta.forEach(precio => {
-        let bsSinComision = usdtNetos * precio;
-        let bsNetos = bsSinComision * (1 - comision);
-        let ganancia = bsNetos - montoBs;
+    // Escuchar el evento binancePrices
+    socket.on("binancePrices", (data) => {
 
-        html += `
-          <tr>
-            <td>${precio.toFixed(2)}</td>
-            <td>${bsSinComision.toFixed(2)}</td>
-            <td>${bsNetos.toFixed(2)}</td>
-            <td>${ganancia.toFixed(2)}</td>
-          </tr>
-        `;
+      // Actualizar tabla de BUY
+      // --- Tabla BUY ---
+      const tbodyBuy = document.querySelector("#resultTableBuy tbody");
+      tbodyBuy.innerHTML = "";
+      const minBuyPrice = Math.min(...data.buy.map(item => parseFloat(item.precio)));
+
+      data.buy.forEach((item, index) => {
+        const currentPrice = parseFloat(item.precio);
+        const highlightClass = currentPrice === minBuyPrice ? "table-success" : "";
+        const row = `<tr class="${highlightClass}">
+          <td>${item.precio}</td>
+          <td>${item.minimo}</td>
+          <td>${item.maximo}</td>
+        </tr>`;
+        tbodyBuy.innerHTML += row;
       });
 
-      html += "</table>";
-      document.getElementById("resultado").innerHTML = html;
+      // Actualizar tabla de SELL
+      // --- Tabla SELL ---
+      const tbodySell = document.querySelector("#resultTableSell tbody");
+      tbodySell.innerHTML = "";
+      const maxBuyPrice = Math.max(...data.sell.map(item => parseFloat(item.precio)));
+      data.sell.forEach((item, index) => {
+        const currentPrice = parseFloat(item.precio);
+        const highlightClass = currentPrice === maxBuyPrice ? "table-danger" : "";
+        const row = `<tr class="${highlightClass}">
+          <td>${item.precio}</td>
+          <td>${item.minimo}</td>
+          <td>${item.maximo}</td>
+        </tr > `;
+        tbodySell.innerHTML += row;
+      });
+
+
+      // --- Contadores de Compra ---
+      const tbodyCounterBuy = document.querySelector("#counterTableBuy tbody");
+      tbodyCounterBuy.innerHTML = "";
+
+      const conteoBuy = {};
+      data.buy.forEach(item => {
+        const precio = parseFloat(item.precio).toFixed(2);
+        conteoBuy[precio] = (conteoBuy[precio] || 0) + 1;
+      });
+
+      // Ordenar precios descendente y tomar los 3 primeros
+      const preciosBuyOrdenados = Object.keys(conteoBuy).sort((a, b) => parseFloat(b) - parseFloat(a));
+      const topBuy = preciosBuyOrdenados.slice(0, 3);
+
+      topBuy.forEach((precio, index) => {
+        const row = `<tr>
+          <td>Contador${index + 1}</td>
+          <td>${precio}</td>
+          <td>${conteoBuy[precio]}</td>
+        </tr>`;
+        tbodyCounterBuy.innerHTML += row;
+      });
+
+      // --- Contadores de Venta ---
+      const tbodyCounterSell = document.querySelector("#counterTableSell tbody");
+      tbodyCounterSell.innerHTML = "";
+
+      const conteoSell = {};
+      data.sell.forEach(item => {
+        const precio = parseFloat(item.precio).toFixed(2);
+        conteoSell[precio] = (conteoSell[precio] || 0) + 1;
+      });
+
+      // Ordenar precios descendente y tomar los 3 primeros
+      const preciosSellOrdenados = Object.keys(conteoSell).sort((a, b) => parseFloat(b) - parseFloat(a));
+      const topSell = preciosSellOrdenados.slice(0, 3);
+
+      topSell.forEach((precio, index) => {
+        const row = `<tr>
+          <td>Contador${index + 1}</td>
+          <td>${precio}</td>
+          <td>${conteoSell[precio]}</td>
+        </tr>`;
+        tbodyCounterSell.innerHTML += row;
+      });
+    });
+
+    socket.on("binanceStats", (data) => {
+      if (data.type === "BUY") {
+        const ctxBuy = document.getElementById("chartBuy").getContext("2d");
+        if (!chartBuy) {
+          chartBuy = new Chart(ctxBuy, {
+            type: "line",
+            data: {
+              // labels: data.fechas,
+              labels: data.fechas.map(f => new Date(f).toLocaleTimeString()),
+              datasets: [
+                {
+                  label: "Precio Compra",
+                  data: data.valores,
+                  borderColor: "#2196f3", // azul
+                  borderWidth: 1,
+                  fill: false,
+                  tension: 0.4, // curva suavizada
+                  pointRadius: 0 // sin puntos
+                },
+                {
+                  label: "Promedio 3",
+                  data: data.promedio3,
+                  borderColor: "#f44336", // rojo
+                  borderWidth: 1.5,
+                  fill: false,
+                  tension: 0.4,
+                  pointRadius: 0
+                },
+                {
+                  label: "Promedio 4",
+                  data: data.promedio4,
+                  borderColor: "#4caf50", // verde
+                  borderWidth: 1.5,
+                  fill: false,
+                  tension: 0.4,
+                  pointRadius: 0
+                }
+              ]
+            },
+            options: {
+              responsive: true,
+              animation: {
+                duration: 800,
+                easing: "easeInOutQuart"
+              },
+              plugins: {
+                legend: { labels: { color: "#fff" } }
+              },
+              scales: {
+                x: { type: "time", time: { unit: "minute" }, ticks: { color: "#fff" } },
+                y: { ticks: { color: "#fff" } }
+              }
+            }
+          });
+        } else {
+          chartBuy.data.labels = data.fechas;
+          chartBuy.data.datasets[0].data = data.valores;
+          chartBuy.data.datasets[1].data = data.promedio3;
+          chartBuy.data.datasets[2].data = data.promedio4;
+          chartBuy.update();
+        }
+      }
+
+      // if (data.type === "SELL") {
+      //   const ctxSell = document.getElementById("chartSell").getContext("2d");
+      //   if (!chartSell) {
+      //     chartSell = new Chart(ctxSell, {
+      //       type: "line",
+      //       data: {
+      //         // labels: data.fechas,
+      //         labels: data.fechas.map(f => new Date(f).toLocaleTimeString()),
+      //         datasets: [
+      //           {
+      //             label: "Precio Venta",
+      //             data: data.valores,
+      //             borderColor: "#ff9800", // naranja
+      //             borderWidth: 2,
+      //             fill: false,
+      //             tension: 0.4,
+      //             pointRadius: 0
+      //           },
+      //           {
+      //             label: "Promedio 3",
+      //             data: data.promedio3,
+      //             borderColor: "#f44336",
+      //             borderWidth: 1.5,
+      //             fill: false,
+      //             tension: 0.4,
+      //             pointRadius: 0
+      //           },
+      //           {
+      //             label: "Promedio 4",
+      //             data: data.promedio4,
+      //             borderColor: "#4caf50",
+      //             borderWidth: 1.5,
+      //             fill: false,
+      //             tension: 0.4,
+      //             pointRadius: 0
+      //           }
+      //         ]
+      //       },
+      //       options: {
+      //         responsive: true,
+      //         animation: {
+      //           duration: 800,
+      //           easing: "easeInOutQuart"
+      //         },
+      //         plugins: {
+      //           legend: { labels: { color: "#fff" } }
+      //         },
+      //         // scales: {
+      //         //   x: { ticks: { color: "#fff" } },
+      //         //   y: { ticks: { color: "#fff" } }
+      //         // }
+      //         scales: {
+      //           x: {
+      //             type: "time",
+      //             time: {
+      //               unit: "minute"
+      //             },
+      //             ticks: { color: "#fff" }
+      //           },
+      //           y: { ticks: { color: "#fff" } }
+      //         }
+      //       }
+      //     });
+      //   } else {
+      //     chartSell.data.labels = data.fechas;
+      //     chartSell.data.datasets[0].data = data.valores;
+      //     chartSell.data.datasets[1].data = data.promedio3;
+      //     chartSell.data.datasets[2].data = data.promedio4;
+      //     chartSell.update();
+      //   }
+      // }
+    });
+
+
+    function showAlert(message, type = "danger") {
+      const alertBox = document.getElementById("alertBox");
+      const alertMessage = document.getElementById("alertMessage");
+
+      alertBox.className = `alert alert - ${type} alert - dismissible fade show position - fixed top - 0 end - 0 m - 3`;
+      alertMessage.innerText = message;
+      alertBox.style.display = "block";
     }
+
+
+
   </script>
+
 </body>
 
 </html>

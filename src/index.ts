@@ -8,6 +8,11 @@ import http from "http"
 import { BinanceService } from "./services/binance.service";
 import dotenv from 'dotenv';
 
+// reutilizas tu repositorio de TypeORM
+import { AppDataSource } from "../src/db/data-source";
+import { BinancePrice } from "../src/models/binancePrice.model";
+import { Between } from "typeorm";
+
 // Detecta si estás en desarrollo o producción
 const envFile = process.env.NODE_ENV === "production" ? "env.prod" : "env.dev";
 dotenv.config({ path: envFile });
@@ -46,13 +51,76 @@ io.on("connection", (socket) => {
         try {
             const buyData = await service.getBinance("BUY", "BOB");
             const sellData = await service.getBinance("SELL", "BOB");
-            // Emitir a todos los clientes conectados
+
+            // Emitir precios en tiempo real
             io.emit("binancePrices", { buy: buyData, sell: sellData });
+
+            // Calcular estadísticas con datos históricos de la base
+            const buyHistory = await getWeeklyPrices("BUY");
+            const sellHistory = await getWeeklyPrices("SELL");
+
+            // const valoresBuy = buyHistory.map(p => Number(p.precio));
+            // const valoresSell = sellHistory.map(p => Number(p.precio));
+
+            // const statsBuy = {
+            //     type: "BUY",
+            //     fechas: buyHistory.map(p => p.timestamp),
+            //     valores: valoresBuy,
+            //     promedio3: movingAverage(valoresBuy, 3),
+            //     promedio4: movingAverage(valoresBuy, 4),
+            //     max: Math.max(...valoresBuy),
+            //     min: Math.min(...valoresBuy),
+            //     volatilidad: standardDeviation(valoresBuy),
+            // };
+
+            // const statsSell = {
+            //     type: "SELL",
+            //     fechas: sellHistory.map(p => p.timestamp),
+            //     valores: valoresSell,
+            //     promedio3: movingAverage(valoresSell, 3),
+            //     promedio4: movingAverage(valoresSell, 4),
+            //     max: Math.max(...valoresSell),
+            //     min: Math.min(...valoresSell),
+            //     volatilidad: standardDeviation(valoresSell),
+            // };
+
+            // Emitir estadísticas en tiempo real
+            // io.emit("binanceStats", statsBuy);
+            // io.emit("binanceStats", statsSell);
+
         } catch (error) {
             console.error("Error consultando Binance:", error);
         }
     }, 3000);
 });
+
+export function movingAverage(data: number[], windowSize: number): (number | null)[] {
+    return data.map((_, idx, arr) => {
+        if (idx < windowSize) return null;
+        const slice = arr.slice(idx - windowSize, idx);
+        const sum = slice.reduce((a, b) => a + b, 0);
+        return sum / windowSize;
+    });
+}
+
+export function standardDeviation(data: number[]): number {
+    const mean = data.reduce((a, b) => a + b, 0) / data.length;
+    const variance = data.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / data.length;
+    return Math.sqrt(variance);
+}
+
+export async function getWeeklyPrices(tradeType: "BUY" | "SELL") {
+    const repo = AppDataSource.getRepository(BinancePrice);
+    const now = new Date();
+    const lastWeek = new Date();
+    lastWeek.setDate(now.getDate() - 7);
+
+    return await repo.find({
+        where: { tradeType, timestamp: Between(lastWeek, now) },
+        order: { timestamp: "ASC" },
+    });
+}
+
 
 
 // Middleware para devolver 404 en todas las rutas
@@ -72,9 +140,13 @@ app.use("/upload", router.uploadRouter);
 app.use("/file", router.fileRouter);
 app.use("/binance", router.binanceRouter);
 
+AppDataSource.initialize()
+    .then(() => {
+        console.log("Conectado a MySQL con TypeORM");
+    })
+    .catch((error) => console.log(error));
+
 server.listen(PORT, () => {
-  console.log(`Servidor corriendo en puerto ${PORT}`);
+    console.log(`Servidor corriendo en puerto ${PORT}`);
 });
-
-
 
