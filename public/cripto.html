@@ -11,32 +11,24 @@
   <div class="container">
     <div class="row">
       <div class="col">
-        <!-- <h4>Precios de Compra (BUY)</h4> -->
-        <table class="table table-dark table-striped table-bordered" id="resultTableBuy">
+        <table class="table table-sm table-dark table-striped table-bordered" id="resultTableBuy">
           <thead>
             <tr>
-              <!-- <th>Nombre</th> -->
               <th>Precio</th>
               <th>Mínimo</th>
               <th>Máximo</th>
-              <!-- <th>Tipo</th> -->
-              <!-- <th>BTC</th> -->
             </tr>
           </thead>
           <tbody></tbody>
         </table>
       </div>
       <div class="col">
-        <!-- <h4>Precios de Venta (SELL)</h4> -->
-        <table class="table table-dark table-striped table-bordered" id="resultTableSell">
+        <table class="table table-sm table-dark table-striped table-bordered" id="resultTableSell">
           <thead>
             <tr>
-              <!-- <th>Nombre</th> -->
               <th>Precio</th>
               <th>Mínimo</th>
               <th>Máximo</th>
-              <!-- <th>Tipo</th> -->
-              <!-- <th>BTC</th> -->
             </tr>
           </thead>
           <tbody></tbody>
@@ -44,10 +36,10 @@
       </div>
     </div>
 
-    <div class="row mt-4">
+    <div class="row mt-3">
       <div class="col">
         <h5>Contadores de Compra</h5>
-        <table class="table table-dark table-striped table-bordered" id="counterTableBuy">
+        <table class="table table-sm table-dark table-striped table-bordered" id="counterTableBuy">
           <thead>
             <tr>
               <th>Contador</th>
@@ -60,7 +52,7 @@
       </div>
       <div class="col">
         <h5>Contadores de Venta</h5>
-        <table class="table table-dark table-striped table-bordered" id="counterTableSell">
+        <table class="table table-sm table-dark table-striped table-bordered" id="counterTableSell">
           <thead>
             <tr>
               <th>Contador</th>
@@ -73,7 +65,7 @@
       </div>
     </div>
 
-    <div class="row mt-4">
+    <!-- <div class="row mt-3">
       <div class="col">
         <h5>Gráfico de Compra (BUY)</h5>
         <canvas id="chartBuy" width="500" height="200"></canvas>
@@ -82,7 +74,7 @@
         <h5>Gráfico de Venta (SELL)</h5>
         <canvas id="chartSell" width="500" height="200"></canvas>
       </div>
-    </div>
+    </div> -->
   </div>
 
 
@@ -93,8 +85,6 @@
 
 
   <script>
-
-
 
     let lastBuyPrice = null;
     let lastSellPrice = null;
@@ -189,67 +179,67 @@
     });
 
     socket.on("binanceStats", (data) => {
-      if (data.type === "BUY") {
-        const ctxBuy = document.getElementById("chartBuy").getContext("2d");
-        if (!chartBuy) {
-          chartBuy = new Chart(ctxBuy, {
-            type: "line",
-            data: {
-              // labels: data.fechas,
-              labels: data.fechas.map(f => new Date(f).toLocaleTimeString()),
-              datasets: [
-                {
-                  label: "Precio Compra",
-                  data: data.valores,
-                  borderColor: "#2196f3", // azul
-                  borderWidth: 1,
-                  fill: false,
-                  tension: 0.4, // curva suavizada
-                  pointRadius: 0 // sin puntos
-                },
-                {
-                  label: "Promedio 3",
-                  data: data.promedio3,
-                  borderColor: "#f44336", // rojo
-                  borderWidth: 1.5,
-                  fill: false,
-                  tension: 0.4,
-                  pointRadius: 0
-                },
-                {
-                  label: "Promedio 4",
-                  data: data.promedio4,
-                  borderColor: "#4caf50", // verde
-                  borderWidth: 1.5,
-                  fill: false,
-                  tension: 0.4,
-                  pointRadius: 0
-                }
-              ]
-            },
-            options: {
-              responsive: true,
-              animation: {
-                duration: 800,
-                easing: "easeInOutQuart"
-              },
-              plugins: {
-                legend: { labels: { color: "#fff" } }
-              },
-              scales: {
-                x: { type: "time", time: { unit: "minute" }, ticks: { color: "#fff" } },
-                y: { ticks: { color: "#fff" } }
-              }
-            }
-          });
-        } else {
-          chartBuy.data.labels = data.fechas;
-          chartBuy.data.datasets[0].data = data.valores;
-          chartBuy.data.datasets[1].data = data.promedio3;
-          chartBuy.data.datasets[2].data = data.promedio4;
-          chartBuy.update();
-        }
-      }
+      // if (data.type === "BUY") {
+      //   const ctxBuy = document.getElementById("chartBuy").getContext("2d");
+      //   if (!chartBuy) {
+      //     chartBuy = new Chart(ctxBuy, {
+      //       type: "line",
+      //       data: {
+      //         // labels: data.fechas,
+      //         labels: data.fechas.map(f => new Date(f).toLocaleTimeString()),
+      //         datasets: [
+      //           {
+      //             label: "Precio Compra",
+      //             data: data.valores,
+      //             borderColor: "#2196f3", // azul
+      //             borderWidth: 1,
+      //             fill: false,
+      //             tension: 0.4, // curva suavizada
+      //             pointRadius: 0 // sin puntos
+      //           },
+      //           {
+      //             label: "Promedio 3",
+      //             data: data.promedio3,
+      //             borderColor: "#f44336", // rojo
+      //             borderWidth: 1.5,
+      //             fill: false,
+      //             tension: 0.4,
+      //             pointRadius: 0
+      //           },
+      //           {
+      //             label: "Promedio 4",
+      //             data: data.promedio4,
+      //             borderColor: "#4caf50", // verde
+      //             borderWidth: 1.5,
+      //             fill: false,
+      //             tension: 0.4,
+      //             pointRadius: 0
+      //           }
+      //         ]
+      //       },
+      //       options: {
+      //         responsive: true,
+      //         animation: {
+      //           duration: 800,
+      //           easing: "easeInOutQuart"
+      //         },
+      //         plugins: {
+      //           legend: { labels: { color: "#fff" } }
+      //         },
+      //         scales: {
+      //           x: { type: "time", time: { unit: "minute" }, ticks: { color: "#fff" } },
+      //           y: { ticks: { color: "#fff" } }
+      //         }
+      //       }
+      //     });
+      //   } else {
+      //     chartBuy.data.labels = data.fechas;
+      //     chartBuy.data.datasets[0].data = data.valores;
+      //     chartBuy.data.datasets[1].data = data.promedio3;
+      //     chartBuy.data.datasets[2].data = data.promedio4;
+      //     chartBuy.update();
+      //   }
+      // }
 
       // if (data.type === "SELL") {
       //   const ctxSell = document.getElementById("chartSell").getContext("2d");
