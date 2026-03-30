@@ -7,8 +7,9 @@
   <link rel="stylesheet" href="/css/bootstrap.min.css">
 </head>
 
-<body>
+<body class="bg-light">
   <div class="container">
+
     <div class="row">
       <div class="col">
         <table class="table table-sm table-dark table-striped table-bordered" id="resultTableBuy">
@@ -42,7 +43,7 @@
         <table class="table table-sm table-dark table-striped table-bordered" id="counterTableBuy">
           <thead>
             <tr>
-              <th>Contador</th>
+              <th>Precios</th>
               <th>Precio</th>
               <th>Cantidad</th>
             </tr>
@@ -55,7 +56,7 @@
         <table class="table table-sm table-dark table-striped table-bordered" id="counterTableSell">
           <thead>
             <tr>
-              <th>Contador</th>
+              <th>Precios</th>
               <th>Precio</th>
               <th>Cantidad</th>
             </tr>
@@ -63,6 +64,10 @@
           <tbody></tbody>
         </table>
       </div>
+    </div>
+
+    <div class="row mt3">
+      <a href="index.html" class="btn btn-secondary mt-4">Volver al menú</a>
     </div>
 
     <!-- <div class="row mt-3">
@@ -147,7 +152,7 @@
 
       topBuy.forEach((precio, index) => {
         const row = `<tr>
-          <td>Contador${index + 1}</td>
+          <td>Precio${index + 1}</td>
           <td>${precio}</td>
           <td>${conteoBuy[precio]}</td>
         </tr>`;
@@ -170,7 +175,7 @@
 
       topSell.forEach((precio, index) => {
         const row = `<tr>
-          <td>Contador${index + 1}</td>
+          <td>Precio${index + 1}</td>
           <td>${precio}</td>
           <td>${conteoSell[precio]}</td>
         </tr>`;
